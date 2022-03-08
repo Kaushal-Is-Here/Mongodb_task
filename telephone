@@ -1,0 +1,59 @@
+import pymongo
+
+connection_url="mongodb://localhost:27017/" 
+client=pymongo.MongoClient(connection_url)
+client.list_database_names() 
+
+database_name="telephonedirectory"
+student_db=client[database_name]
+collection_name="phonebook"
+collection=student_db[collection_name]
+
+document={"Name":"Raj",
+"phone":  111111111,
+"place": "xyz"}
+collection.insert_one(document)
+
+
+documents=[{"Name":"Roshan","phone":222222222,"place":"xyz"},{"Name":"Rahim","phone":333333333,"place":"xyz"},{"Name":"Ronak","phone":444444444,"place":"xyz"}]
+collection.insert_many(documents)
+
+
+query={"Name":"Raj"}
+print(collection.find_one(query))
+
+
+query={"place":"xyz"}
+result=collection.find(query)
+for i in result:
+    print(i)
+
+
+result=collection.find({}).limit(9)
+for i in result:
+    print(i)
+
+
+query={"phone":{"$eq":111111111}}
+print(collection.find_one(query))
+
+
+query={"phone":{"$eq":111111111}}
+present_data=collection.find_one(query)
+new_data={'$set':{"Name":'Ramesh'}}
+collection.update_one(present_data,new_data)
+
+present_data={"place":"xyz"}
+new_data={"$set":{"place":"abc"}}
+collection.update_many(present_data,new_data)
+
+
+query={"phone":111111111}
+collection.delete_one(query)
+
+
+query={"place":"abc"}
+collection.delete_many(query)
+
+
+collection.drop()
